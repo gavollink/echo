@@ -27,8 +27,8 @@ One day, I'm on macOS and I decide to try the `KiTTY` terminal.
 I start it up, and my `PROMPT_COMMAND` script starts dumping junk
 characters.  Turns out that the first thing KiTTY does on startup
 is to force bash into POSIX mode.  When that happens, the built-in
-`echo' command stops interpreting -e, uh, I needed that.  I use
-it in several places during my `.profile` and `.bashrc` setup
+`echo` command stops interpreting -e, uh, I needed that.  I use
+it in several places during my `.profile` and `.bashrc` startup
 scripts.
 
 Okay, what about macOS /bin/echo?  No, that is strict `POSIX.1`.
