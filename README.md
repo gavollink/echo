@@ -15,6 +15,13 @@ the full Xcode isn't actually necessary.
 
 Put it where it makes sense for you.
 
+# Try This...
+
+```$ strings echo | less```
+
+This goes through the `echo` command and prints out strings it finds
+inside that file.  An embedded HELP and LICENSE show up here.
+
 # Why
 
 One day, I'm on macOS and I decide to try the `KiTTY` terminal.
