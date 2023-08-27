@@ -8,14 +8,13 @@ FUNCTIONAL CLONE of Bash's built-in echo, but ALWAYS HAS `-e` support
 Requires: gcc (or macOS `Xcode Command Line Tools`)
 the full Xcode isn't actually necessary.
 
-```$ gcc -Wall -O2 -std=gnu99 -o echo echo.c
-```
+```$ gcc -Wall -O2 -std=gnu99 -o echo echo.c```
 
 # Install
 
 Put it where it makes sense for you.
 
-# Try This...
+# Try This
 
 ```$ strings echo | less```
 
@@ -35,7 +34,7 @@ scripts.
 Okay, what about macOS /bin/echo?  No, that is strict `POSIX.1`.
 (doesn't interpret -e, only -n)
 
-Thus this clone of `echo' has been carefully written to do the same
+Thus this clone of `echo` has been carefully written to do the same
 thing as the Bash shell's built-in `echo` (when Bash is NOT in POSIX
 mode).
 
@@ -48,6 +47,5 @@ other things).
 Also, if something sets the environment variable `POSIXLY_CORRECT=1`
 then even GNU echo stops responding to `-e`.
 
-This version is under 400 lines,
-and doesn't need any extra libraries.
+This version is under 400 lines, and doesn't need any extra libraries.
 
