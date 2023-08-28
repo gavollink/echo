@@ -1,1 +1,6 @@
 echo
+echo.o
+vanilla.echo
+x86_64.echo
+arm64.echo
+univeral.echo
