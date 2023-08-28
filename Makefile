@@ -23,7 +23,7 @@ universal.echo: x86_64.echo arm64.echo
 	lipo -create -output universal.echo x86_64.echo arm64.echo
 
 x86_64.echo: echo.c
-	$(CC) $(CCFLAGS) -o x86_64.echo echo.c -target x86_64-apple-macos10.12
+	$(CC) $(CCFLAGS) -o x86_64.echo echo.c -target x86_64-apple-macos10.10
 
 arm64.echo: echo.c
 	$(CC) $(CCFLAGS) -o arm64.echo echo.c -target arm64-apple-macos11
