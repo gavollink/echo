@@ -1,6 +1,3 @@
 echo
 echo.o
-vanilla.echo
-x86_64.echo
-arm64.echo
-universal.echo
+*.echo

@@ -4,7 +4,7 @@
  * License embedded at bottom of this file.
  *
  */
-#define VERSION "0.01"
+#define VERSION "0.02"
 #define C_YEARS "2023"
 #define IDENT "echo"
 #define SUBHEAD " (another clone)"
@@ -13,6 +13,15 @@
 #define AUTHOR1 "Gary Allen Vollink"
 #define CONTACT1 "gary" AT "vollink" DOT "com"
 #define AUTHORS "   " AUTHOR1 " <" CONTACT1 ">\n"
+
+#ifndef MAC_BROKEN_BASH
+#define HELP_E \
+"        \\e        Escape       (ASCII 27 | \\x1b | \\0033)\n"
+#define STYLE "(Linux)"
+#else
+#define HELP_E ""
+#define STYLE "(macOS)"
+#endif
 
 /* WHY FOUR SPACES?
  * Four is the minimum default string-length that `strings' will show.
@@ -66,8 +75,8 @@ HELP TEXT BLOCK\n\
   https://gitlab.home.vollink.com/external/echo/\n\
     \n\
 Echo the arguments to standard output.\n\
-Tested to be functionaly identical to the Bash shell built-in,\n\
-when Bash is NOT stuck into `POSIX' mode.\n\
+Tested to be functionaly identical to the " STYLE " Bash shell \n\
+built-in echo, when Bash is NOT stuck into `POSIX' mode.\n\
     \n\
     -n  Suppress sending a newline at the end.\n\
     -e  Interpret `\\?' escape sequences.\n\
@@ -80,14 +89,14 @@ will be recognized:\n\
     \n\
         \\\\        backslash    (ASCII 92 | \\x5c | \\0134)\n\
         \\a        Bell         (ASCII 7)\n\
-        \\b        Backspace    (ASCII 8)\n\
+        \\b        Backspace    (ASCII  8 | \\x08 | \\0010)\n\
         \\c        Stop output and exit immediate (no newline)\n\
-        \\e        Escape       (ASCII 27 | \\x1b | \\033)\n\
-        \\f        Form Feed    (ASCII 12 | \\x0c | \\014)\n\
-        \\n        Newline      (ASCII 10 | \\x0a | \\012)\n\
-        \\n        Return       (ASCII 13 | \\x0d | \\015)\n\
-        \\t        Tab          (ASCII  9 | \\x09 | \\011)\n\
-        \\v        Vertical Tab (ASCII 11 | \\x0b | \\013)\n\
+" HELP_E "\
+        \\f        Form Feed    (ASCII 12 | \\x0c | \\0014)\n\
+        \\n        Newline      (ASCII 10 | \\x0a | \\0012)\n\
+        \\n        Return       (ASCII 13 | \\x0d | \\0015)\n\
+        \\t        Tab          (ASCII  9 | \\x09 | \\0011)\n\
+        \\v        Vertical Tab (ASCII 11 | \\x0b | \\0013)\n\
         \\0NNN     Byte designated in Octal (1 to 3 digits)\n\
         \\xNN      Byte designated in Hexidecimal (1 or 2 digits)\n\
     \n\
@@ -236,12 +245,18 @@ doprint( int opts, char* out )
                     } **** */
                     exit(0);
                 }
+#ifndef MAC_BROKEN_BASH
                 else if ( 0 == sncmp ( "\\e", &out[cx], 2 ) ) { // ESC
                     /* Escape Character */
                     putchar( 0x1b );
                     retval++;
                     cx++;
                 }
+#elif defined DEBUG
+else if ( 0 == sncmp ( "\\e", &out[cx], 2 ) ) { // ESC
+    fprintf( stderr, "MAC_BROKEN_BASH defined behavior, '\\e' does nothing.\n");
+}
+#endif
                 else if ( 0 == sncmp ( "\\f", &out[cx], 2 ) ) { // FF
                     putchar( 0x0c );
                     retval++;
@@ -271,10 +286,22 @@ doprint( int opts, char* out )
                     if ( isxdigit( out[cx+2] ) ) {
                         if ( isxdigit( out[cx+3] ) ) {
                             buildval = 16 * hextobin( out[cx+2] );
+#ifdef DEBUG
+    fprintf( stderr, "HEX BUILD pos 1: '%c', Now: %d \\x%02x \\0%03o\n",
+            out[cx+2], buildval, buildval, buildval );
+#endif
                             buildval = buildval + hextobin( out[cx+3] );
+#ifdef DEBUG
+    fprintf( stderr, "HEX BUILD pos 2: '%c', Final: %d \\x%02x \\0%03o\n",
+            out[cx+2], buildval, buildval, buildval );
+#endif
                             cx = cx + 3;
                         } else {
                             buildval = hextobin( out[cx+2] );
+#ifdef DEBUG
+    fprintf( stderr, "HEX BUILD pos 1: '%c', Final: %d \\x%02x \\0%03o\n",
+            out[cx+2], buildval, buildval, buildval );
+#endif
                             cx = cx + 2;
                         }
                         if ( buildval ) {
@@ -283,6 +310,9 @@ doprint( int opts, char* out )
                         }
                         buildval = 0;
                     } else {
+#ifdef DEBUG
+    fprintf( stderr, "HEX ABORT on 'no hexadecimal digit'.\n");
+#endif
                         putchar( '\\' );
                         retval++;
                     }
@@ -291,11 +321,19 @@ doprint( int opts, char* out )
                     if ( '0' <= out[cx+2] && '7' >= out[cx+2] ) {
                         cx++;
                         for ( int dx = 0; dx < 3; dx++ ) {
-                            if ( '0' <= out[cx+1] && '7' >= out[cx]+1 ) {
+                            if ( '0' <= out[cx+1] && '7' >= out[cx+1] ) {
                                 buildval =
                                     (buildval * 8) + hextobin( out[cx+1] );
+#ifdef DEBUG
+    fprintf( stderr, "OCTAL BUILD pos %d: '%c', Now: %d \\x%02x \\0%03o\n",
+            dx, out[cx+1], buildval, buildval, buildval );
+#endif
                                 cx++;
                             } else {
+#ifdef DEBUG
+    fprintf( stderr, "OCTAL STOP pos %d: '%c', Final: %d \\x%02x \\0%03o\n",
+            dx, out[cx+1], buildval, buildval, buildval );
+#endif
                                 dx=3;
                             }
                         }
@@ -305,6 +343,9 @@ doprint( int opts, char* out )
                         }
                         buildval = 0;
                     } else {
+#ifdef DEBUG
+    fprintf( stderr, "OCTAL ABORT on 'no octal digit'.\n");
+#endif
                         putchar( '\\' );
                         retval++;
                     }
