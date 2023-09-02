@@ -1,7 +1,7 @@
 /****************************************************************************
  * echo.c - cloning what BASH does in `NOT POSIX' mode
  *
- * License embedded at bottom of this file.
+ * License embedded at LINE 32 of this file.
  *
  */
 #define VERSION "0.02"

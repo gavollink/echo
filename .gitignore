@@ -1,3 +1,4 @@
 echo
 echo.o
 *.echo
+*.swp
