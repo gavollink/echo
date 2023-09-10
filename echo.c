@@ -4,7 +4,7 @@
  * License embedded at LINE 32 of this file.
  *
  */
-#define VERSION "0.02"
+#define VERSION "0.03"
 #define C_YEARS "2023"
 #define IDENT "echo"
 #define SUBHEAD " (another clone)"
@@ -94,7 +94,7 @@ will be recognized:\n\
 " HELP_E "\
         \\f        Form Feed    (ASCII 12 | \\x0c | \\0014)\n\
         \\n        Newline      (ASCII 10 | \\x0a | \\0012)\n\
-        \\n        Return       (ASCII 13 | \\x0d | \\0015)\n\
+        \\r        Return       (ASCII 13 | \\x0d | \\0015)\n\
         \\t        Tab          (ASCII  9 | \\x09 | \\0011)\n\
         \\v        Vertical Tab (ASCII 11 | \\x0b | \\0013)\n\
         \\0NNN     Byte designated in Octal (1 to 3 digits)\n\
