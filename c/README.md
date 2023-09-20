@@ -7,7 +7,7 @@ put into POSIX mode with no `-e` support).
 ## Compile
 
 Requires: gcc (or macOS `Xcode Command Line Tools`)
-the full Xcode isn't actually necessary.
+the full Xcode isn't actually necessary for this.
 
 ```
 $ gcc -Wall -O2 -std=gnu99 -o echo echo.c
@@ -80,7 +80,8 @@ including the gnulib package (which in turn requires a handful of
 other things).
 
 Also, if something sets the environment variable `POSIXLY_CORRECT=1`
-then even GNU echo stops responding to `-e`.
+then even GNU echo stops responding to `-e`.  By the way, when bash is
+started in POSIX mode, it makes sure that environment variable IS set.
 
 This version is under 500 lines, and doesn't need extra libraries.
 
