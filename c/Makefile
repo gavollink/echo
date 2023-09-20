@@ -6,7 +6,7 @@ CCFLAGS+=-DMAC_BROKEN_BASH
 endif
 ifdef DEBUG
 	# Maintainer stuff only, you don't want to see this.
-CCFLAGS+=-DDEBUG
+CCFLAGS+=-ggdb -DDEBUG
 endif
 #CCFLAGS+=-ggdb
 
@@ -19,12 +19,17 @@ X_DEPS=Makefile
 SYS=$(shell uname -s)
 ARCH=$(shell uname -m)
 MAJ_VER=$(shell uname -r | awk -F. '{print $$1}')
+# OS X 11, Big Sur, is the earliest macOS that supported arm64
+TARGET_ARM64=-target arm64-apple-macos11
+# OS X 10.10 is Yosemite, released 2014, which supports
+# all hardware from 2010 or more recent.
+TARGET_X86_64=-target x86_64-apple-macos10.10
 
 ifeq ($(shell test "Darwin" = $(SYS) -a $(MAJ_VER) -ge 20; echo $$?), 0)
 # This is a mac running Big Sur (11, D20) or NEWER:
 # Darwin 20 is Big Sur, Big Sur is the earliest macOS that supported arm64.
 # Any build platform here (x86_64 or arm64) will be able to target
-# a universal binary with arm64-Big Sur and x86_64-Yosemite
+# a universal binary with arm64-Big Sur and x86_64-Yosemite.
 INTERIM=universal.$(FINAL)
 else ifeq ($(shell test "Darwin" = $(SYS) -a $(MAJ_VER) -lt 14; echo $$?), 0)
 # This is a mac running Mavericks (10.9, D13) or OLDER.
@@ -52,12 +57,12 @@ universal.$(FINAL): x86_64.$(FINAL) arm64.$(FINAL)
 # So that's where I'm pegging x86_64 specific targets.
 # There's a comment at the end of the file for further info...
 x86_64.$(FINAL): $(SOURCE) $(X_DEPS)
-	$(CC) $(CCFLAGS) -o x86_64.$(FINAL) $(SOURCE) -target x86_64-apple-macos10.10
+	$(CC) $(CCFLAGS) -o x86_64.$(FINAL) $(SOURCE) $(TARGET_X86_64)
 
 # OS X 11, Big Sur is the first arm64 capable version, so it is the lowest
 # target possible for arm64.
 arm64.$(FINAL): $(SOURCE) $(X_DEPS)
-	$(CC) $(CCFLAGS) -o arm64.$(FINAL) $(SOURCE) -target arm64-apple-macos11
+	$(CC) $(CCFLAGS) -o arm64.$(FINAL) $(SOURCE) $(TARGET_ARM64)
 
 default.$(FINAL): $(SOURCE) $(X_DEPS)
 	$(CC) $(CCFLAGS) -o default.$(FINAL) $(SOURCE)
@@ -75,7 +80,7 @@ install: $(FINAL)
 	fi
 
 clean:
-	-rm -f $(FINAL).o *.$(FINAL)
+	-rm -f $(FINAL).o $(FINAL)*.obj *.$(FINAL)
 
 dist-clean: clean
 	-rm -f $(FINAL)
@@ -112,7 +117,7 @@ dist-clean: clean
 # Makefile does, the info here is for those who have older stuff and want to
 # fiddle around with trying to support it with a UNIVERSAL binary.
 #
-# Real talk... All hardware sold from 2012 on supports Yosemite or newer.
-# That's 11 years ago, which is forever for Apple hardware.
+# Real talk... All Apple hardware sold from 2010 on supports Yosemite
+# or newer.  That's 13 years ago, which is forever for Apple hardware.
 #
 # EOF Makefile
