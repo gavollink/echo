@@ -25,10 +25,11 @@ Rust project, I've left it as is.
 
 # Differences...
 
-The C echo is version 0.02.
+The C echo is version 0.03.
 The Rust echo is version 0.0.2.
 
-I've found no functional differences at all.
+I've found no functional differences at all, and I do some silly
+tests.
 
 # More
 
