@@ -4,21 +4,20 @@ FUNCTIONAL CLONE of Bash's built-in echo, except it ALWAYS
 HAS `-e` support (where Bash and even GNU echo can be
 put into POSIX mode with no `-e` support).
 
-Written in C, which I've been writing since 1994.
+Written in Rust, as a first project.
 
 ## Compile
 
-Requires: gcc (or macOS `Xcode Command Line Tools`)
-the full Xcode isn't actually necessary for this.
+Requires: rustc and cargo ( https://www.rust-lang.org/tools/install )
 
 ```
-$ cd rust
-$ gcc -Wall -O2 -std=gnu99 -o echo echo.c
+$ cd c
+$ cargo build --release
 ```
 
 ## Install
 
-Put c/echo where it makes sense for you.
+Put rust/target/release/echo where it makes sense for you.
 
 ## Compatibility
 
@@ -33,13 +32,10 @@ they let these types of basics go unfixed for YEARS.
 
 IF this is important to YOU:
 
-```
-gcc -DMAC_BROKEN_BASH -Wall -O2 -std=gnu99 -o echo echo.c
-```
-
-I literally put an #ifndef around the `if ( "\\e" ...` block, so it
-will do exactly as the macOS broken Bash that doesn't follow its own
-man page.
+Modify the file rust/src/main.rs.  Remove the five lines marked
+`// MAN PAGE BEHAVIOR`
+Unlike the C version, I haven't found an equivalent to compile-time define
+flags for cargo/rust.
 
 ## Try This
 
@@ -55,10 +51,6 @@ For compatibility sake I couldn't add `--help` and `--version` like the
 Gnu echo tool does (again, only when `POSIXLY_CORRECT` doesn't force
 it to ignore those AND `-e` as well.  This is what I could do.
 
-NOTE: If this is built on MacOS 11 or newer, it will default to building
-a Universal (`x86_64` and `arm64`) binary, but that means that those
-HELP and LICENSE blocks will be repeated twice.  This is expected
-because of how Universal binaries are built.
 
 # Why
 
@@ -87,12 +79,12 @@ GNU echo also is part of coreutils and requires a whole bunch of
 other libraries, including the gnulib package
 (which in turn requires a handful of other things).
 
-This C version is under 500 lines, and doesn't need extra libraries.
+This Rust version is under 400 lines, and doesn't need extra libraries.
 
-## Why C?
+## Why Rust?
 
-I've been writing in C since 1994.  So, believe it or not, this was the
-fastest way for me to get what I wanted done.
-If you don't like it, I got around to the Rust version, too.
+I want to figure out a bit about how Rust works by doing something I've
+already done in C.
+If you don't like Rust, I wrote a C version, first.
 It's one directory over, use that instead.
 

@@ -1,4 +1,7 @@
-echo
-echo.o
-*.echo
-*.swp
+.*.swp
+.*.swo
+c/echo
+c/echo.o
+c/*.echo
+rust/Cargo.lock
+rust/target/
