@@ -1,0 +1,21 @@
+# If the first two are set externally,
+# `:=` won't override the values.
+CC:=gcc
+CCFLAGS:=-Wall -O2
+
+# If a prefix isn't set, make won't install
+prefix:=
+bindir:=bin
+DESTDIR:=
+# Do Not Set Here, for reference only:
+# INSTALLDIR=$(DESTDIR)/$(prefix)/$(bindir)/
+
+# MacOS - Set a code signing signature name here.
+# SIGNID=CompanyName Releases
+SIGNID:=
+# MacOS/Sign - If signature is in a non-standard keychain:
+# CHAIN=Offline.keychain-db
+CHAIN:=
+
+# vim: ft=make
+# EOF configure.dist / configure.mk
