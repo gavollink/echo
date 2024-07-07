@@ -4,7 +4,7 @@
  * License embedded at LINE 32 of this file.
  *
  */
-#define VERSION "0.03"
+#define VERSION "0.04"
 #define C_YEARS "2023"
 #define IDENT "echo"
 #define SUBHEAD " (another clone)"
@@ -23,6 +23,7 @@
 #define STYLE "(macOS)"
 #endif
 
+#ifndef ALTBUILD
 /* WHY FOUR SPACES?
  * Four is the minimum default string-length that `strings' will show.
  */
@@ -58,6 +59,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\
 END LICENSE BLOCK\n\
     \n\
 ";
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -67,6 +69,7 @@ END LICENSE BLOCK\n\
 /* WHY FOUR SPACES?
  * Four is the minimum default string-length that `strings' will show.
  */
+#ifndef ALTBUILD
 const char HELP_TEXT[] = "\
     \n\
 HELP TEXT BLOCK\n\
@@ -113,6 +116,7 @@ THIS PROGRAM IS " IDENT ", Version: " VERSION
 " by: \n" AUTHORS "\
     \n\
 ";
+#endif
 
 #define ERROR 0x80000000
 #define NO_NEWLINE 0x2
@@ -365,6 +369,7 @@ else if ( 0 == sncmp ( "\\e", &out[cx], 2 ) ) { // ESC
     return retval;
 }
 
+#ifndef ALTBUILD
 void
 defeat_optimization(void)
 {
@@ -386,6 +391,7 @@ defeat_optimization(void)
     keep_HELP_TEXT_from_optimizing_out = 1 + keep_LICENSE_from_optimizing_out;
     keep_LICENSE_from_optimizing_out = keep_from_optimizing_out;
 }
+#endif
 
 int
 main ( int argc, char *argv[] )
@@ -394,7 +400,9 @@ main ( int argc, char *argv[] )
     int opts = 0;
     int print = 0;
 
+#ifndef ALTBUILD
     defeat_optimization();
+#endif
 
     for ( int cx = opt_count; cx < argc; cx++ ) {
         if ( 0 == print ) {

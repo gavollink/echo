@@ -123,11 +123,11 @@ endif
 $(ALT_ARCH).$(FINAL): $(ALT_OBJS)
 	@echo "    # Linking $@ in `dirname $@` from $(ALT_OBJS)"
 ifeq ($(shell test "Darwin" = "$(SYS)" -a "x86_64" = "$(ALT_ARCH)"; echo $$?), 0)
-	$(CC) $(TARGET_X86_64) -o $@ $(ALT_OBJS)
+	$(CC) -DALTBUILD=1 $(TARGET_X86_64) -o $@ $(ALT_OBJS)
 else ifeq ($(shell test "Darwin" = "$(SYS)"; echo $$?), 0)
-	$(CC) $(TARGET_ARM64) -o $@ $(ALT_OBJS)
+	$(CC) -DALTBUILD=1 $(TARGET_ARM64) -o $@ $(ALT_OBJS)
 else
-	$(CC) -o $@ $(ALT_OBJS)
+	$(CC) -DALTBUILD=1 -o $@ $(ALT_OBJS)
 endif
 
 $(OBJS): $(BUILD_DIR)/%.o: %.c $(X_DEPS)
@@ -230,7 +230,12 @@ install: $(FINAL)
 	fi
 
 clean:
-	-rm -f $(FINAL).o $(FINAL)*.obj *.$(FINAL)
+	-rm -rf "$(BUILD_DIR)"
+	@if [ -d "$(ALT_BUILD_DIR)" ]; then \
+		echo 'rm -rf "$(ALT_BUILD_DIR)"'; \
+		rm -rf "$(ALT_BUILD_DIR)"; \
+	fi
+	-rm -f *.$(FINAL)
 
 dist-clean distclean: clean
 	-rm -f $(FINAL)

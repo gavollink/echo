@@ -12,13 +12,17 @@ Requires: gcc (or macOS `Xcode Command Line Tools`)
 the full Xcode isn't actually necessary for this.
 
 ```
-$ cd rust
+$ cd c
 $ gcc -Wall -O2 -std=gnu99 -o echo echo.c
 ```
 
 ## Install
 
 Put c/echo where it makes sense for you.
+
+If you want, you can modify configure.mk to
+get `make install` functionality, the stub defines are there
+(after make is run at least once).
 
 ## Compatibility
 
@@ -31,15 +35,18 @@ behavior.  I really hate that I had to think about this and write it
 down.  It is hard to be someone who likes developing on macOS, when
 they let these types of basics go unfixed for YEARS.
 
-IF this is important to YOU:
+IF this (broken) behavior is important to YOU:
 
 ```
 gcc -DMAC_BROKEN_BASH -Wall -O2 -std=gnu99 -o echo echo.c
 ```
 
-I literally put an #ifndef around the `if ( "\\e" ...` block, so it
+Or set `MAC_BROKEN_BASH=1` in configure.mk
+(which exists after make is run at least one time).
+
+I put an #ifndef around the `if ( "\\e" ...` block, so it
 will do exactly as the macOS broken Bash that doesn't follow its own
-man page.
+man page, once the define is set.
 
 ## Try This
 
@@ -55,10 +62,11 @@ For compatibility sake I couldn't add `--help` and `--version` like the
 Gnu echo tool does (again, only when `POSIXLY_CORRECT` doesn't force
 it to ignore those AND `-e` as well.  This is what I could do.
 
-NOTE: If this is built on MacOS 11 or newer, it will default to building
-a Universal (`x86_64` and `arm64`) binary, but that means that those
-HELP and LICENSE blocks will be repeated twice.  This is expected
-because of how Universal binaries are built.
+NOTE: If this is built on MacOS 11 or newer, the build process will
+build a universal library.  However, these embedded strings will be
+supressed in the Alternate intermediate build.  That is, if built on an M1,
+these strings will be surpressed in the `x86_64.echo` intermediate target,
+and vice-versa.
 
 # Why
 
@@ -88,6 +96,12 @@ other libraries, including the gnulib package
 (which in turn requires a handful of other things).
 
 This C version is under 500 lines, and doesn't need extra libraries.
+
+## Why not just use printf?
+
+You got me there, sort of.
+Would you believe if I said it was faster to write this, than to change
+`echo` to `printf` AND add `\n` to every place echo would have done it?
 
 ## Why C?
 
