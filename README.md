@@ -4,6 +4,11 @@ FUNCTIONAL CLONE of Bash's built-in echo, except it ALWAYS
 HAS `-e` support (where Bash and even GNU echo can be
 put into POSIX mode with no `-e` support).
 
+# Code Home
+
+    Primary Development: https://gitlab.home.vollink.com/external/echo
+    Backup Location:     https://github.com/gavollink/echo
+
 # Rust and C
 
 These are two completely different project folders.
