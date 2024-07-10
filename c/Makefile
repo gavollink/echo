@@ -39,6 +39,11 @@ SYS=$(shell uname -s)
 # x86_64 or arm64
 ARCH=$(shell uname -m)
 MAJ_VER=$(shell uname -r | awk -F. '{print $$1}')
+# OS X 11, Big Sur, is the earliest macOS that supported arm64
+TARGET_ARM64=-target arm64-apple-macos11
+# OS X 10.10 is Yosemite, released 2014, which supports
+# all hardware from 2010 or more recent.
+TARGET_X86_64=-target x86_64-apple-macos10.10
 
 BUILD_DIR=$(ARCH).OBJ
 OBJS := $(foreach TT,$(SOURCE),$(patsubst %.c,$(BUILD_DIR)/%.o,$(TT) ) )
@@ -183,7 +188,7 @@ keychain-unlock: macos-keychain-unlock
 macos-keychain-unlock: mk.skel
 	@printf '#!/bin/bash\n' > macos-keychain-unlock
 	@printf '\n_NEED_UNLOCK=1\n' >> macos-keychain-unlock
-	@printf 'CK=`date -v-3m +"%%s"`\n' >> macos-keychain-unlock
+	@printf 'CK=`date -v-3M +"%%s"`\n' >> macos-keychain-unlock
 	@printf 'if [ -e './.keychain-unlock' ]\n' >> macos-keychain-unlock
 	@printf 'then\n' >> macos-keychain-unlock
 	@printf '    TS=`stat -f"%%m" ./.keychain-unlock`\n' >> macos-keychain-unlock
